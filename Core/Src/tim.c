@@ -23,10 +23,6 @@
 /* USER CODE BEGIN 0 */
 #include <BMP.h>
 
-extern uint8_t temp_wait;
-extern BMP_STATE BMP_State;
-extern uint8_t pres_wait;
-
 /* USER CODE END 0 */
 
 TIM_HandleTypeDef htim17;
@@ -103,19 +99,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim == &htim17)
 	{
-	//	HAL_GPIO_WritePin(Timertest_GPIO_Port, Timertest_Pin, RESET);
-		if (temp_wait == 1)
-		{
-		    temp_wait++;
-			BMP_State = BMP_State_Temp_ReadResult;
-			HAL_TIM_Base_Stop_IT(&htim17);
-		}
-		else if(pres_wait == 1)
-		{
-			pres_wait++;
-			BMP_State = BMP_State_Pressure_ReadResult;
-			HAL_TIM_Base_Stop_IT(&htim17);
-		}
+		HAL_GPIO_WritePin(Timertest_GPIO_Port, Timertest_Pin, GPIO_PIN_RESET);
+		BMP_UpdateState();
 	}
 }
 /* USER CODE END 1 */

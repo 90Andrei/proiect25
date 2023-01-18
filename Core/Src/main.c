@@ -61,6 +61,8 @@ bool HMC_EXTI_Ready = false;
 bool HMC_IT_Ready = false;
 int32_t baropres;
 
+
+
 extern DMA_HandleTypeDef hdma_spi1_rx;
 /* USER CODE END PV */
 
@@ -82,10 +84,6 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  // uint8_t buffTest[] = {0x8F, 0x00};
-
-
-
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -114,63 +112,61 @@ int main(void)
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
   BMP_Init();
- // HMC_DEVIDv2();
-//  Set_SingleMeasureMode();
- // ADXL_Init();
-//  GYRO_PowerMode();
- //HAL_TIM_Base_Init(&htim7);
-//  int16_t x,y,z;
+  HMC_DevId();
+  HMC_Set_SingleMeasureMode();
+  ADXL_Init();
+  GYRO_PowerMode();
 
- // ADXL_ReadValuesXYZ(&x, &y, &z);
-//  GYRO_ReadValuesXYZ(&x, &y, &z);
+  int16_t x,y,z;
+
+  ADXL_ReadValuesXYZ(&x, &y, &z);
+  GYRO_ReadValuesXYZ(&x, &y, &z);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  while (1)
-  {
-/*	if(ADXL_IsExtiDataReady())
+	while (1)
 	{
-		ADXL_IT_StartSPI();
-	}
+		if (ADXL_IsExtiDataReady())
+		{
+			ADXL_IT_StartSPI();
+		}
 
-	if(GYRO_IsExtiDataReady())
-	{
-		GYRO_SPI_IT_START();
-	}
+		if (GYRO_IsExtiDataReady())
+		{
+			GYRO_SPI_IT_START();
+		}
 
-	if(is_new_ACC_datacomplete)
-	{
-		is_new_ACC_datacomplete = false;
-		ADXL_IT_GetValuesXYZ(&x, &y, &z);
-		ADXL_ConvertXYZValuesG(&x, &y, &z);
-	//	USART_TransmitACCValues(&x, &y, &z);
- 	}
+		if (is_new_ACC_datacomplete)
+		{
+			is_new_ACC_datacomplete = false;
+			ADXL_IT_GetValuesXYZ(&x, &y, &z);
+			ADXL_ConvertXYZValuesG(&x, &y, &z);
+			USART_TransmitACCValues(&x, &y, &z);
+        }
 
-    if(is_new_GYRO_datacomplete)
-    {
-	    is_new_GYRO_datacomplete =false;
-	    GYRO_IT_GetValuesXYZ(&x, &y, &z);
-  	    GYRO_XYZConv(&x, &y, &z);
+		if (is_new_GYRO_datacomplete)
+		{
+			is_new_GYRO_datacomplete = false;
+			GYRO_IT_GetValuesXYZ(&x, &y, &z);
+			GYRO_XYZConv(&x, &y, &z);
+			USART_TransmitGYROValues(&x, &y, &z);
+        }
 
-  	 //   USART_TransmitGYROValues(&x, &y, &z);
-    }
-*/
-	  if(BMP_State_handler() == 1)
-     {
-        baropres = BMP_GetPres();
-        USART_TransmitBMPValue(&baropres);
-     }
+		if (BMP_CyclicTask() == 1)
+		{
+			baropres = BMP_GetPresure();
+			USART_TransmitBMPValue(&baropres);
+		}
 
-//	 if(HMC_IT_Ready)
-//	 {
- //        HMC_IT_GetValuesXYZ(&x, &y, &z);
-//		 USART_TransmitHMCValues(&x, &y, &z);
-//		 HMC_IT_Ready = false;
-	  //}
+ 		if (HMC_IT_Ready)
+		{
+			HMC_IT_GetValuesXYZ(&x, &y, &z);
+			USART_TransmitHMCValues(&x, &y, &z);
+			HMC_IT_Ready = false;
+		}
 
-	 // HMC_readtest();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

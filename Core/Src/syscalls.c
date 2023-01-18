@@ -52,6 +52,8 @@ int _getpid(void)
 
 int _kill(int pid, int sig)
 {
+	(void) pid;
+	(void) sig;
 	errno = EINVAL;
 	return -1;
 }

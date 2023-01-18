@@ -183,10 +183,7 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
       ACC_EXTI_Interrupt = false;
    }
 
-   //Release CS line
-//   HAL_GPIO_TogglePin(SPI_IT_TEST_GPIO_Port, SPI_IT_TEST_Pin);
-
-   if(GYRO_EXTI_Interrupt)
+  if(GYRO_EXTI_Interrupt)
    {
      HAL_GPIO_WritePin(SPI_CS_GYRO_GPIO_Port, SPI_CS_GYRO_Pin, GPIO_PIN_SET);
      is_new_GYRO_datacomplete = true;
