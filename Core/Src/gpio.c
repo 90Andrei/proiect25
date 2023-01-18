@@ -24,7 +24,6 @@
 /* USER CODE BEGIN 0 */
 #include <stdbool.h>
 #include "HMC.h"
-#include "i2c.h"
 extern bool HMC_EXTI_Ready;
 /* USER CODE END 0 */
 

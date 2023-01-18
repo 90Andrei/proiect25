@@ -117,10 +117,10 @@ void GYRO_XYZConv(int16_t *xg, int16_t *yg, int16_t *zg)
 
 void GYRO_SPI_IT_START()
 {
-	 for(int i = 0; i < 7; i++)
-     {
-    	 TxBuffer[i] = 0;
-     }
+    for(int i = 0; i < 7; i++)
+    {
+        TxBuffer[i] = 0;
+    }
 
 	TxBuffer[0] = GYRO_DATAX0 | GYRO_SPI_MB | GYRO_SPI_ReadOp;
 	if(HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY)
