@@ -132,14 +132,14 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 void USART_TransmitACCValues(int16_t *x, int16_t *y, int16_t *z)
 {
     char buffer[200];
-    sprintf(buffer, "ACC: xg = %d,%04d   yg = %d,%04d  zg = %.d,%04d \r\n", (*x) / 10000, (*x) % 10000, (*y) / 10000, (*y) % 10000 , (*z) / 10000, abs((*z) % 10000));
+    sprintf(buffer, "ACC: xg = %d,%04d   yg = %d,%04d  zg = %d,%04d \r\n", (*x) / 10000, (*x) % 10000, (*y) / 10000, (*y) % 10000 , (*z) / 10000, abs((*z) % 10000));
     HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
 }
 
 void USART_TransmitGYROValues(int16_t *x, int16_t *y, int16_t *z)
 {
     char buffer[200];
-    sprintf(buffer, "GYRO: xg = %d,%03d   yg = %d,%03d  zg = %.d,%03d \r\n", (*x) / 1000, abs((*x) % 1000), (*y) / 1000, abs((*y) % 1000) , (*z) / 1000, abs((*z) % 1000));
+    sprintf(buffer, "GYRO: xs = %d,%03d   ys = %d,%03d  zs = %d,%03d \r\n", (*x) / 1000, abs((*x) % 1000), (*y) / 1000, abs((*y) % 1000) , (*z) / 1000, abs((*z) % 1000));
     HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
 
 }
@@ -147,7 +147,7 @@ void USART_TransmitGYROValues(int16_t *x, int16_t *y, int16_t *z)
 void USART_TransmitHMCValues(int16_t *x, int16_t *y, int16_t *z)
 {
     char buffer[200];
-    sprintf(buffer, "Compass: x = %d,%02d   y = %d,%02d  z = %.d,%02d \r\n", (*x) / 100, abs((*x) % 100), (*y) / 1000, abs((*y) % 100) , (*z) / 100, abs((*z) % 100));
+    sprintf(buffer, "Compass: x = %d,%02d   y = %d,%02d  z = %d,%02d \r\n", (*x) / 100, abs((*x) % 100), (*y) / 1000, abs((*y) % 100) , (*z) / 100, abs((*z) % 100));
     HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
 }
 

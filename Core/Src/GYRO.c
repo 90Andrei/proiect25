@@ -83,16 +83,17 @@ void GYRO_PowerMode()
     HAL_GPIO_TogglePin(ADXL_RESET_GPIO_Port, ADXL_RESET_Pin);
 
    //stop GYRO power mode
-    GYRO_WriteData(GYRO_CTRL_REG1,0x8);  //set gyro sleep mode test?  stop:0x0
+    GYRO_WriteData(GYRO_CTRL_REG1,0x8);  //set gyro sleep mode test  stop:0x0
     HAL_Delay(100);
-   //Check SPI communication
 
+    //Check SPI communication
     GYRO_ReadData(GYRO_DEVID, &devId);
     if(devId != 0xD3)
     {
     	Error_Handler();
     }
-   //enable pin2 DRDY interrupt
+
+    //enable pin2 DRDY interrupt
     GYRO_WriteData(GYRO_CTRLREG3, 0x8);   //setam bit D3 I2_DRDY pentru a activa intreruprea Data Ready;
 
    //start GYRO power mode-normal
@@ -116,11 +117,10 @@ void GYRO_XYZConv(int16_t *xg, int16_t *yg, int16_t *zg)
 
 void GYRO_SPI_IT_START()
 {
-	//memset(TxBuffer, 0, 7 * sizeof(TxBuffer[0]));
-     for(int i = 0; i < 7; i++)
-     {
-    	 TxBuffer[i] = 0;
-     }
+    for(int i = 0; i < 7; i++)
+    {
+        TxBuffer[i] = 0;
+    }
 
 	TxBuffer[0] = GYRO_DATAX0 | GYRO_SPI_MB | GYRO_SPI_ReadOp;
 	if(HAL_SPI_GetState(&hspi1) == HAL_SPI_STATE_READY)

@@ -89,8 +89,6 @@ bool ADXL_ReadMultipleBytes(uint8_t firstRegAddress, uint8_t *regValues,
 
 	return true;
 
-	//commit
-	//ssss
 
 }
 
@@ -103,12 +101,10 @@ void ADXL_ReadValuesXYZ(int16_t *x, int16_t *y, int16_t *z) {
 	HAL_SPI_TransmitReceive(&hspi1, TxBuffer, RxBuffer, 7, 200);
 	HAL_GPIO_WritePin(SPI_CS_ACC_GPIO_Port, SPI_CS_ACC_Pin, GPIO_PIN_SET);
 
-	*x = ((int16_t) RxBuffer[2] << 8) + RxBuffer[1];
-	*y = ((int16_t) RxBuffer[4] << 8) + RxBuffer[3];
-	*z = ((int16_t) RxBuffer[6] << 8) + RxBuffer[5];
+	*x = (int16_t)((RxBuffer[2] << 8) + RxBuffer[1]);
+	*y = (int16_t)((RxBuffer[4] << 8) + RxBuffer[3]);
+	*z = (int16_t)((RxBuffer[6] << 8) + RxBuffer[5]);
 }
-
-
 
 void ADXL_IT_GetValuesXYZ(int16_t *x, int16_t *y, int16_t *z)
 {
@@ -155,8 +151,7 @@ void ADXL_Set_Measurebit(void)
 void ADXL_ConvertXYZValuesG(int16_t *xg , int16_t *yg, int16_t *zg)
 {
 
-//	ADXL_Set_Measurebit();
-//ADXL_IT_ReadValuesXYZ(&x, &y, &z);
+
 	*xg = (*xg) * ADXL345_SCALE_FACTOR;
 	*yg = (*yg) * ADXL345_SCALE_FACTOR;
 	*zg = (*zg) * ADXL345_SCALE_FACTOR;
@@ -190,9 +185,6 @@ int ADXL_Init(void)
 
 	// Start Measure
     ADXL_Set_Measurebit();
-
-	// Make 1 dummy read to x, y, z, return -EIO if HAL Read fails
-  //
 
     return 0;
 }

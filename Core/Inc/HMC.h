@@ -11,12 +11,11 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-bool HMC_Devid ();
-bool HMC_DEVIDv2();
+bool HMC_DevId();
 void HMC_IT_GetValuesXYZ(int16_t *x, int16_t *y, int16_t *z);
 bool HMC_ReadValues();
 bool Set_ContinousMeasureMode();
-bool Set_SingleMeasureMode();
+bool HMC_Set_SingleMeasureMode();
 void dummyread();
 bool HMC_readtest();
 
