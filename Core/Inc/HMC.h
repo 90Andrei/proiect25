@@ -11,12 +11,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-bool HMC_DevId();
-void HMC_IT_GetValuesXYZ(int16_t *x, int16_t *y, int16_t *z);
-bool HMC_ReadValues();
-bool Set_ContinousMeasureMode();
+bool HMC_Init();
 bool HMC_Set_SingleMeasureMode();
-void dummyread();
-bool HMC_readtest();
+bool HMC_ReadValues();
+void HMC_IT_GetValuesXYZ(int16_t *x, int16_t *y, int16_t *z);
 
 #endif /* INC_HMC_H_ */

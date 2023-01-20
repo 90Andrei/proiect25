@@ -61,9 +61,6 @@ bool HMC_EXTI_Ready = false;
 bool HMC_IT_Ready = false;
 int32_t baropres;
 
-
-
-extern DMA_HandleTypeDef hdma_spi1_rx;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,7 +81,8 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  /* USER CODE END 1 */
+    int16_t x,y,z;
+    /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -112,46 +110,37 @@ int main(void)
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
   BMP_Init();
-  HMC_DevId();
-  HMC_Set_SingleMeasureMode();
+  HMC_Init();
   ADXL_Init();
-  GYRO_PowerMode();
-
-  int16_t x,y,z;
-
-  ADXL_ReadValuesXYZ(&x, &y, &z);
-  GYRO_ReadValuesXYZ(&x, &y, &z);
+  GYRO_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
-	while (1)
+    while (1)
 	{
 		if (ADXL_IsExtiDataReady())
 		{
-			ADXL_IT_StartSPI();
+			ADXL_MeasureRawData_DMA();
 		}
 
 		if (GYRO_IsExtiDataReady())
 		{
-			GYRO_SPI_IT_START();
+			GYRO_MeasureRawData_DMA();
 		}
 
 		if (is_new_ACC_datacomplete)
 		{
 			is_new_ACC_datacomplete = false;
-			ADXL_IT_GetValuesXYZ(&x, &y, &z);
-			ADXL_ConvertXYZValuesG(&x, &y, &z);
-			USART_TransmitACCValues(&x, &y, &z);
+			ADXL_GetValuesXYZ(&x, &y, &z);
+		    USART_TransmitACCValues(&x, &y, &z);
         }
 
 		if (is_new_GYRO_datacomplete)
 		{
 			is_new_GYRO_datacomplete = false;
 			GYRO_IT_GetValuesXYZ(&x, &y, &z);
-			GYRO_XYZConv(&x, &y, &z);
-			USART_TransmitGYROValues(&x, &y, &z);
+		    USART_TransmitGYROValues(&x, &y, &z);
         }
 
 		if (BMP_CyclicTask() == 1)

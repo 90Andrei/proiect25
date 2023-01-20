@@ -178,23 +178,20 @@ static bool _readCalibration(void)
         return false;
     }
 
-    //TODO: REZOLVA WARNING
-    b1.AC1 = ((int16_t) calibValues[0] << 8) | calibValues[1];
-    b1.AC2 = ((int16_t) calibValues[2] << 8) | calibValues[3];
-    b1.AC3 = ((int16_t) calibValues[4] << 8) | calibValues[5];
-    b1.AC4 = ((uint16_t) calibValues[6] << 8) | calibValues[7];
-    b1.AC5 = ((uint16_t) calibValues[8] << 8) | calibValues[9];
-    b1.AC6 = ((uint16_t) calibValues[10] << 8) | calibValues[11];
-    b1.B1 = ((int16_t) calibValues[12] << 8) | calibValues[13];
-    b1.B2 = ((int16_t) calibValues[14] << 8) | calibValues[15];
-    b1.MB = ((int16_t) calibValues[16] << 8) | calibValues[17];
-    b1.MC = ((int16_t) calibValues[18] << 8) | calibValues[19];
-    b1.MD = ((int16_t) calibValues[20] << 8) | calibValues[21];
+    b1.AC1 = (int16_t)(calibValues[0] << 8 | calibValues[1]);
+    b1.AC2 = (int16_t)(calibValues[2] << 8 | calibValues[3]);
+    b1.AC3 = (int16_t)(calibValues[4] << 8 | calibValues[5]);
+    b1.AC4 = (uint16_t)(calibValues[6] << 8 | calibValues[7]);
+    b1.AC5 = (uint16_t)(calibValues[8] << 8 | calibValues[9]);
+    b1.AC6 = (uint16_t)(calibValues[10] << 8 | calibValues[11]);
+    b1.B1 = (int16_t)(calibValues[12] << 8 | calibValues[13]);
+    b1.B2 = (int16_t)(calibValues[14] << 8 | calibValues[15]);
+    b1.MB = (int16_t)(calibValues[16] << 8 | calibValues[17]);
+    b1.MC = (int16_t)(calibValues[18] << 8 | calibValues[19]);
+    b1.MD = (int16_t)(calibValues[20] << 8 | calibValues[21]);
 
     return true;
 }
-
-// read uncompensated temperature
 
 //calculate temperature
 
@@ -225,11 +222,11 @@ static void _calcTemp(int32_t *temperature, int32_t *pressure)
     B7 = ((uint32_t) uPres - (uint32_t) B3) * 50000;
     if (B7 < 0x80000000)
     {
-        uPres = ((B7 * 2) / B4);  //pos sa trb cast?
+        uPres =(int32_t)((B7 * 2) / B4);
     }
     else
     {
-        uPres = (B7 / B4) * 2;
+        uPres =(int32_t)(B7 / B4) * 2;
     }
     x1 = (uPres / 256) * (uPres / 256);
     x1 = (x1 * 3038) / 65536;

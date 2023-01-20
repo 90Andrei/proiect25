@@ -24,8 +24,8 @@
 #include <stdbool.h>
 extern bool is_new_ACC_datacomplete;
 extern bool is_new_GYRO_datacomplete;
-extern bool ACC_EXTI_Interrupt;
-extern bool GYRO_EXTI_Interrupt;
+extern bool ACC_EXTI_Interrupt_g;
+extern bool GYRO_EXTI_Interrupt_g;
 /* USER CODE END 0 */
 
 SPI_HandleTypeDef hspi1;
@@ -176,18 +176,18 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
 /* USER CODE BEGIN 1 */
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-   if(ACC_EXTI_Interrupt)
+   if(ACC_EXTI_Interrupt_g)
    {
       is_new_ACC_datacomplete = true;
       HAL_GPIO_WritePin(SPI_CS_ACC_GPIO_Port, SPI_CS_ACC_Pin, GPIO_PIN_SET);
-      ACC_EXTI_Interrupt = false;
+      ACC_EXTI_Interrupt_g = false;
    }
 
-  if(GYRO_EXTI_Interrupt)
+  if(GYRO_EXTI_Interrupt_g)
    {
      HAL_GPIO_WritePin(SPI_CS_GYRO_GPIO_Port, SPI_CS_GYRO_Pin, GPIO_PIN_SET);
      is_new_GYRO_datacomplete = true;
-     GYRO_EXTI_Interrupt = false;
+     GYRO_EXTI_Interrupt_g = false;
    }
 }
 
