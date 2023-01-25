@@ -47,13 +47,13 @@ bool HMC_Init()
     {
         return false;   //facem un dummy read
     }
-    HMC_Set_SingleMeasureMode();
+    HMC_SetSingleMeasurentMode();
 
     return true;
 }
 
 
-bool HMC_Set_SingleMeasureMode()
+bool HMC_SetSingleMeasurentMode()
 {
     uint8_t single = 0x1; //punel pe 1 sa fie in sigle measurement mode, daca lam setat pe 0 ii in continous measure mode
 
@@ -75,7 +75,7 @@ bool HMC_ReadValues()
     return true;
 }
 
-void HMC_IT_GetValuesXYZ(int16_t *x, int16_t *y, int16_t *z)
+void HMC_GetValues(int16_t *x, int16_t *y, int16_t *z)
 {
     *x = (int16_t)(databuffer_s[0] << 8 | databuffer_s[1]);
     *y = (int16_t)(databuffer_s[2] << 8 | databuffer_s[3]);

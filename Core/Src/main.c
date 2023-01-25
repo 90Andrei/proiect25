@@ -121,25 +121,25 @@ int main(void)
 	{
 		if (ADXL_IsExtiDataReady())
 		{
-			ADXL_MeasureRawData_DMA();
+			ADXL_StartMeasurement();
 		}
 
 		if (GYRO_IsExtiDataReady())
 		{
-			GYRO_MeasureRawData_DMA();
+			GYRO_StartMeasurement();
 		}
 
 		if (is_new_ACC_datacomplete)
 		{
 			is_new_ACC_datacomplete = false;
-			ADXL_GetValuesXYZ(&x, &y, &z);
+			ADXL_GetValues(&x, &y, &z);
 		    USART_TransmitACCValues(&x, &y, &z);
         }
 
 		if (is_new_GYRO_datacomplete)
 		{
 			is_new_GYRO_datacomplete = false;
-			GYRO_IT_GetValuesXYZ(&x, &y, &z);
+			GYRO_IT_GetValues(&x, &y, &z);
 		    USART_TransmitGYROValues(&x, &y, &z);
         }
 
@@ -151,7 +151,7 @@ int main(void)
 
  		if (HMC_IT_Ready)
 		{
-			HMC_IT_GetValuesXYZ(&x, &y, &z);
+			HMC_GetValues(&x, &y, &z);
 			USART_TransmitHMCValues(&x, &y, &z);
 			HMC_IT_Ready = false;
 		}

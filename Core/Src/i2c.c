@@ -185,7 +185,7 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
 
     if (HMC_EXTI_Ready)
     {
-        HMC_Set_SingleMeasureMode();
+        HMC_SetSingleMeasurentMode();
         HMC_EXTI_Ready = false;
         HMC_IT_Ready = true;
     }

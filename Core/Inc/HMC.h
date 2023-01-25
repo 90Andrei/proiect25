@@ -12,8 +12,8 @@
 #include <stdint.h>
 
 bool HMC_Init();
-bool HMC_Set_SingleMeasureMode();
+bool HMC_SetSingleMeasurentMode();
 bool HMC_ReadValues();
-void HMC_IT_GetValuesXYZ(int16_t *x, int16_t *y, int16_t *z);
+void HMC_GetValues(int16_t *x, int16_t *y, int16_t *z);
 
 #endif /* INC_HMC_H_ */

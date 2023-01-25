@@ -13,6 +13,6 @@ static inline bool GYRO_IsExtiDataReady()
 	return (HAL_GPIO_ReadPin(GPIO_EXTI_GYRO_GPIO_Port, GPIO_EXTI_GYRO_Pin) == GPIO_PIN_SET);
 }
 void GYRO_Init();
-void GYRO_IT_GetValuesXYZ(int16_t *x, int16_t *y, int16_t *z);
-void GYRO_MeasureRawData_DMA();
+void GYRO_IT_GetValues(int16_t *x, int16_t *y, int16_t *z);
+void GYRO_StartMeasurement();
 #endif /* INC_GYRO_H_ */

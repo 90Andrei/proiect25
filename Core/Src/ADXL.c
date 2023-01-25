@@ -26,7 +26,7 @@ extern DMA_HandleTypeDef hdma_spi1_rx;
 static bool _ReadData(uint8_t regAddress, uint8_t *registerValue);
 static void _Set_Measurebit(void);
 static void _Stop_Measurebit(void);
-static void _INIT_IT(void);
+static void _Activate_It(void);
 static void _readValuesXYZ(int16_t *x, int16_t *y, int16_t *z);
 
 bool ACC_EXTI_Interrupt_g;
@@ -53,7 +53,7 @@ void ADXL_Init(void)
     {
         Error_Handler();
     }
-    _INIT_IT();
+    _Activate_It();
 
     // Start Measure
     _Set_Measurebit();
@@ -61,7 +61,7 @@ void ADXL_Init(void)
     //make dummy read to clear first EXTI interrupt
     _readValuesXYZ(&x, &y, &z);
 }
-void ADXL_GetValuesXYZ(int16_t *x, int16_t *y, int16_t *z)
+void ADXL_GetValues(int16_t *x, int16_t *y, int16_t *z)
 {
     *x = (int16_t)(RxBuffer_s[2] << 8 | RxBuffer_s[1]);
     *y = (int16_t)(RxBuffer_s[4] << 8 | RxBuffer_s[3]);
@@ -71,7 +71,7 @@ void ADXL_GetValuesXYZ(int16_t *x, int16_t *y, int16_t *z)
     *z = (*z) * ADXL345_SCALE_FACTOR;
 }
 
-void ADXL_MeasureRawData_DMA(void)
+void ADXL_StartMeasurement(void)
 {
     for(int i = 1; i < 7; i++)
     {
@@ -154,7 +154,7 @@ static void _Set_Measurebit(void)
 	_WriteData(ADXL_POWER_CTL, 0x8);
 }
 
-static void _INIT_IT(void)
+static void _Activate_It(void)
 {
 	_WriteData(ADXL_INT_MAP_REG , 0x80);    //setam bit d7 ca sa activam intreruperea data ready pt int2
 	_WriteData(ADXL_INT_ENABLE_REG, 0x80);

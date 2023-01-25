@@ -30,8 +30,6 @@ bool GYRO_EXTI_Interrupt_g;
 #define GYRO345_SCALE_FACTOR     9   //0,009 inmultim cu 1000 sa avem integer
 #define GYRO_CTRLREG3            0x22
 
-
-
 void GYRO_Init()
 {
     uint8_t devId;
@@ -67,7 +65,7 @@ void GYRO_Init()
 
 
 
-void GYRO_MeasureRawData_DMA()
+void GYRO_StartMeasurement()
 {
     for(int i = 0; i < 7; i++)
     {
@@ -83,7 +81,7 @@ void GYRO_MeasureRawData_DMA()
     }
 }
 
-void GYRO_IT_GetValuesXYZ(int16_t *x, int16_t *y, int16_t *z)
+void GYRO_IT_GetValues(int16_t *x, int16_t *y, int16_t *z)
 {
     *x = (int16_t)(RxBuffer_s[2] << 8 | RxBuffer_s[1]);
     *y = (int16_t)(RxBuffer_s[4] << 8 | RxBuffer_s[3]);
