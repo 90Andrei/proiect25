@@ -17,6 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <pressure_sensor.h>
 #include "main.h"
 #include "dma.h"
 #include "i2c.h"
@@ -33,7 +34,6 @@
 #include "GYRO.h"
 #include <stdbool.h>
 #include "HMC.h"
-#include "BMP.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,13 +53,36 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-bool is_new_data_available = false;
-bool is_new_ACC_datacomplete = false;
-bool is_new_processing_ready = true;
-bool is_new_GYRO_datacomplete = false;
-bool HMC_EXTI_Ready = false;
-bool HMC_IT_Ready = false;
-int32_t baropres;
+/*
+ * this variable becomes true whe spi interrupt started and the data
+ * is sent and we are ready to calculate acceleration values,after
+ * that becomes false again till next acc spi interrupt starts
+ */
+bool is_new_ACC_datacomplete_g = false;
+/*
+ * this variable becomes true whe spi interrupt started and the data
+ * is sent and we are ready to calculate gyroscope values,after
+ * that becomes false again till next gyro spi interrupt starts
+ */
+bool is_new_GYRO_datacomplete_g = false;
+
+/*
+ * this variable is default on false and becomes true when an EXTI
+ *  interrupt starts for the HMC,and after we calculate HMC
+ * values  becomes false again till another EXTI interrupt starts
+ */
+bool is_HMC_EXTI_Enabled_g = false;
+/*
+ * this variable becomes true whe I2C interrupt started and the data
+ * is sent and we are ready to calculate HMC values,after
+ * that becomes false again till next I2c HMC interrupt starts
+ */
+bool is_HMC_IT_Enabled_g = false;
+/*
+ * in this variable we save barometric pressure value read from the pressure sensor
+ */
+static int32_t baropres_g;
+
 
 /* USER CODE END PV */
 
@@ -109,7 +132,7 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
-  BMP_Init();
+  Pressure_Sensor_Init();
   HMC_Init();
   ADXL_Init();
   GYRO_Init();
@@ -129,31 +152,31 @@ int main(void)
 			GYRO_StartMeasurement();
 		}
 
-		if (is_new_ACC_datacomplete)
+		if (is_new_ACC_datacomplete_g)
 		{
-			is_new_ACC_datacomplete = false;
-			ADXL_GetValues(&x, &y, &z);
-		    USART_TransmitACCValues(&x, &y, &z);
+			is_new_ACC_datacomplete_g = false;
+            ADXL_GetValues(&x, &y, &z);
+            USART_TransmitACCValues(&x, &y, &z);
         }
 
-		if (is_new_GYRO_datacomplete)
+		if (is_new_GYRO_datacomplete_g)
 		{
-			is_new_GYRO_datacomplete = false;
-			GYRO_IT_GetValues(&x, &y, &z);
+			is_new_GYRO_datacomplete_g = false;
+			GYRO_GetValues(&x, &y, &z);
 		    USART_TransmitGYROValues(&x, &y, &z);
         }
 
-		if (BMP_CyclicTask() == 1)
+		if (Pressure_Sensor_CyclicTask() == 1)
 		{
-			baropres = BMP_GetPresure();
-			USART_TransmitBMPValue(&baropres);
+			baropres_g = Pressure_Sensor_GetPresure();
+			USART_TransmitBMPValue(&baropres_g);
 		}
 
- 		if (HMC_IT_Ready)
+ 		if (is_HMC_IT_Enabled_g)
 		{
 			HMC_GetValues(&x, &y, &z);
 			USART_TransmitHMCValues(&x, &y, &z);
-			HMC_IT_Ready = false;
+			is_HMC_IT_Enabled_g = false;
 		}
 
     /* USER CODE END WHILE */

@@ -18,16 +18,16 @@
  */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <pressure_sensor.h>
 #include "i2c.h"
 
 /* USER CODE BEGIN 0 */
 
 #include <stdbool.h>
 #include "HMC.h"
-#include "BMP.h"
 
-extern bool HMC_EXTI_Ready;
-extern bool HMC_IT_Ready;
+extern bool is_HMC_EXTI_Enabled_g;
+extern bool is_HMC_IT_Enabled_g;
 /* USER CODE END 0 */
 
 I2C_HandleTypeDef hi2c1;
@@ -178,24 +178,24 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *i2cHandle)
 /* USER CODE BEGIN 1 */
 void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-    if (hi2c->Devaddress == BMP_ADDR_READ)
+    if (hi2c->Devaddress == Pressure_Sensor_ADDR_READ)
     {
-        BMP_UpdateState();
+        Pressure_Sensor_UpdateState();
     }
 
-    if (HMC_EXTI_Ready)
+    if (is_HMC_EXTI_Enabled_g)
     {
         HMC_SetSingleMeasurentMode();
-        HMC_EXTI_Ready = false;
-        HMC_IT_Ready = true;
+        is_HMC_EXTI_Enabled_g = false;
+        is_HMC_IT_Enabled_g = true;
     }
 }
 
 void HAL_I2C_MemTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-    if (hi2c->Devaddress == BMP_ADDR_WRITE)
+    if (hi2c->Devaddress == Pressure_Sensor_ADDR_WRITE)
     {
-        BMP_UpdateState();
+        Pressure_Sensor_UpdateState();
     }
 }
 /* USER CODE END 1 */

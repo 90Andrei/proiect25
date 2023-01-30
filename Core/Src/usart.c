@@ -129,6 +129,13 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
+/**
+ * @brief  we use all this functions to send with UART the values calulated by the sensors
+ *
+ * @param x
+ * @param y
+ * @param z
+ */
 void USART_TransmitACCValues(int16_t *x, int16_t *y, int16_t *z)
 {
     char buffer[200];

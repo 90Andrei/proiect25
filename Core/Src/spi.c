@@ -22,10 +22,10 @@
 
 /* USER CODE BEGIN 0 */
 #include <stdbool.h>
-extern bool is_new_ACC_datacomplete;
-extern bool is_new_GYRO_datacomplete;
-extern bool ACC_EXTI_Interrupt_g;
-extern bool GYRO_EXTI_Interrupt_g;
+extern bool is_new_ACC_datacomplete_g;
+extern bool is_new_GYRO_datacomplete_g;
+extern bool is_ACC_EXTI_Enabled_g;
+extern bool is_GYRO_EXTI_Enabled_g;
 /* USER CODE END 0 */
 
 SPI_HandleTypeDef hspi1;
@@ -176,18 +176,18 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
 /* USER CODE BEGIN 1 */
 void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-   if(ACC_EXTI_Interrupt_g)
+   if(is_ACC_EXTI_Enabled_g)
    {
-      is_new_ACC_datacomplete = true;
+      is_new_ACC_datacomplete_g = true;
       HAL_GPIO_WritePin(SPI_CS_ACC_GPIO_Port, SPI_CS_ACC_Pin, GPIO_PIN_SET);
-      ACC_EXTI_Interrupt_g = false;
+      is_ACC_EXTI_Enabled_g = false;
    }
 
-  if(GYRO_EXTI_Interrupt_g)
+  if(is_GYRO_EXTI_Enabled_g)
    {
      HAL_GPIO_WritePin(SPI_CS_GYRO_GPIO_Port, SPI_CS_GYRO_Pin, GPIO_PIN_SET);
-     is_new_GYRO_datacomplete = true;
-     GYRO_EXTI_Interrupt_g = false;
+     is_new_GYRO_datacomplete_g = true;
+     is_GYRO_EXTI_Enabled_g = false;
    }
 }
 

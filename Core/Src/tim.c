@@ -18,10 +18,10 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <pressure_sensor.h>
 #include "tim.h"
 
 /* USER CODE BEGIN 0 */
-#include <BMP.h>
 
 /* USER CODE END 0 */
 
@@ -99,8 +99,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim == &htim17)
 	{
-		HAL_GPIO_WritePin(Timertest_GPIO_Port, Timertest_Pin, GPIO_PIN_RESET);
-		BMP_UpdateState();
+       Pressure_Sensor_UpdateState();
 	}
 }
 /* USER CODE END 1 */
