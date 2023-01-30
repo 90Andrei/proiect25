@@ -17,6 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <pressure_sensor.h>
 #include "main.h"
 #include "dma.h"
 #include "i2c.h"
@@ -33,7 +34,6 @@
 #include "GYRO.h"
 #include <stdbool.h>
 #include "HMC.h"
-#include "BMP.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,17 +53,37 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-bool is_new_data_available = false;
-bool is_new_ACC_datacomplete = false;
-bool is_new_processing_ready = true;
-bool is_new_GYRO_datacomplete = false;
-bool HMC_EXTI_Ready = false;
-bool HMC_IT_Ready = false;
-int32_t baropres;
+/*
+ * this variable becomes true whe spi interrupt started and the data
+ * is sent and we are ready to calculate acceleration values,after
+ * that becomes false again till next acc spi interrupt starts
+ */
+bool is_new_ACC_datacomplete_g = false;
+/*
+ * this variable becomes true whe spi interrupt started and the data
+ * is sent and we are ready to calculate gyroscope values,after
+ * that becomes false again till next gyro spi interrupt starts
+ */
+bool is_new_GYRO_datacomplete_g = false;
+
+/*
+ * this variable is default on false and becomes true when an EXTI
+ *  interrupt starts for the HMC,and after we calculate HMC
+ * values  becomes false again till another EXTI interrupt starts
+ */
+bool is_HMC_EXTI_Enabled_g = false;
+/*
+ * this variable becomes true whe I2C interrupt started and the data
+ * is sent and we are ready to calculate HMC values,after
+ * that becomes false again till next I2c HMC interrupt starts
+ */
+bool is_HMC_IT_Enabled_g = false;
+/*
+ * in this variable we save barometric pressure value read from the pressure sensor
+ */
+static int32_t baropres_g;
 
 
-
-extern DMA_HandleTypeDef hdma_spi1_rx;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,7 +104,8 @@ void SystemClock_Config(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-  /* USER CODE END 1 */
+    int16_t x,y,z;
+    /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -111,60 +132,51 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
-  BMP_Init();
-  HMC_DevId();
-  HMC_Set_SingleMeasureMode();
+  Pressure_Sensor_Init();
+  HMC_Init();
   ADXL_Init();
-  GYRO_PowerMode();
-
-  int16_t x,y,z;
-
-  ADXL_ReadValuesXYZ(&x, &y, &z);
-  GYRO_ReadValuesXYZ(&x, &y, &z);
+  GYRO_Init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
-	while (1)
+    while (1)
 	{
 		if (ADXL_IsExtiDataReady())
 		{
-			ADXL_IT_StartSPI();
+			ADXL_StartMeasurement();
 		}
 
 		if (GYRO_IsExtiDataReady())
 		{
-			GYRO_SPI_IT_START();
+			GYRO_StartMeasurement();
 		}
 
-		if (is_new_ACC_datacomplete)
+		if (is_new_ACC_datacomplete_g)
 		{
-			is_new_ACC_datacomplete = false;
-			ADXL_IT_GetValuesXYZ(&x, &y, &z);
-			ADXL_ConvertXYZValuesG(&x, &y, &z);
-			USART_TransmitACCValues(&x, &y, &z);
+			is_new_ACC_datacomplete_g = false;
+            ADXL_GetValues(&x, &y, &z);
+            USART_TransmitACCValues(&x, &y, &z);
         }
 
-		if (is_new_GYRO_datacomplete)
+		if (is_new_GYRO_datacomplete_g)
 		{
-			is_new_GYRO_datacomplete = false;
-			GYRO_IT_GetValuesXYZ(&x, &y, &z);
-			GYRO_XYZConv(&x, &y, &z);
-			USART_TransmitGYROValues(&x, &y, &z);
+			is_new_GYRO_datacomplete_g = false;
+			GYRO_GetValues(&x, &y, &z);
+		    USART_TransmitGYROValues(&x, &y, &z);
         }
 
-		if (BMP_CyclicTask() == 1)
+		if (Pressure_Sensor_CyclicTask() == 1)
 		{
-			baropres = BMP_GetPresure();
-			USART_TransmitBMPValue(&baropres);
+			baropres_g = Pressure_Sensor_GetPresure();
+			USART_TransmitBMPValue(&baropres_g);
 		}
 
- 		if (HMC_IT_Ready)
+ 		if (is_HMC_IT_Enabled_g)
 		{
-			HMC_IT_GetValuesXYZ(&x, &y, &z);
+			HMC_GetValues(&x, &y, &z);
 			USART_TransmitHMCValues(&x, &y, &z);
-			HMC_IT_Ready = false;
+			is_HMC_IT_Enabled_g = false;
 		}
 
     /* USER CODE END WHILE */

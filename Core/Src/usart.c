@@ -129,18 +129,25 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
+/**
+ * @brief  we use all this functions to send with UART the values calulated by the sensors
+ *
+ * @param x
+ * @param y
+ * @param z
+ */
 void USART_TransmitACCValues(int16_t *x, int16_t *y, int16_t *z)
 {
     char buffer[200];
-    sprintf(buffer, "ACC: xg = %d,%04d   yg = %d,%04d  zg = %d,%04d \r\n", (*x) / 10000, (*x) % 10000, (*y) / 10000, (*y) % 10000 , (*z) / 10000, abs((*z) % 10000));
-    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+    sprintf(buffer, "ACC: xg = %d,%04d   yg = %d,%04d  zg = %d,%04d \r\n", (*x) / 10000, abs((*x) % 10000), (*y) / 10000, abs((*y) % 10000) , (*z) / 10000, abs((*z) % 10000));
+    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, (uint16_t)strlen(buffer), HAL_MAX_DELAY);
 }
 
 void USART_TransmitGYROValues(int16_t *x, int16_t *y, int16_t *z)
 {
     char buffer[200];
     sprintf(buffer, "GYRO: xs = %d,%03d   ys = %d,%03d  zs = %d,%03d \r\n", (*x) / 1000, abs((*x) % 1000), (*y) / 1000, abs((*y) % 1000) , (*z) / 1000, abs((*z) % 1000));
-    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, (uint16_t)strlen(buffer), HAL_MAX_DELAY);
 
 }
 
@@ -148,13 +155,13 @@ void USART_TransmitHMCValues(int16_t *x, int16_t *y, int16_t *z)
 {
     char buffer[200];
     sprintf(buffer, "Compass: x = %d,%02d   y = %d,%02d  z = %d,%02d \r\n", (*x) / 100, abs((*x) % 100), (*y) / 1000, abs((*y) % 100) , (*z) / 100, abs((*z) % 100));
-    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, (uint16_t)strlen(buffer), HAL_MAX_DELAY);
 }
 
 void USART_TransmitBMPValue(int32_t* pres)
 {
     char buffer[200];
     sprintf(buffer, "Pres:%ld \r\n", *pres);
-    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, strlen(buffer), HAL_MAX_DELAY);
+    HAL_UART_Transmit(&huart2, (uint8_t*)buffer, (uint16_t)strlen(buffer), HAL_MAX_DELAY);
 }
 /* USER CODE END 1 */

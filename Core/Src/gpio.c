@@ -24,7 +24,7 @@
 /* USER CODE BEGIN 0 */
 #include <stdbool.h>
 #include "HMC.h"
-extern bool HMC_EXTI_Ready;
+extern bool is_HMC_EXTI_Enabled_g;
 /* USER CODE END 0 */
 
 /*----------------------------------------------------------------------------*/
@@ -128,7 +128,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
   if(GPIO_Pin == GPIO_EXTI5_HMC_Pin)
   {
-	  HMC_EXTI_Ready = true;
+	  is_HMC_EXTI_Enabled_g = true;
 	  HMC_ReadValues();
   }
 }
